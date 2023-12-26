@@ -1,0 +1,295 @@
+openapi: 3.0.0
+info:
+  title: Course and Teacher API
+  version: 1.0.0
+paths:
+  /course/list:
+    get:
+      parameters:
+        - name: page_index
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                page_index: 1
+                page_count: 10
+                list:
+                  - course_id: 1
+                    course_name: "課程1"
+                    course_description: "課程簡介1"
+                    course_teacher: "教師A"
+                    course_start: "Mon 11:00"
+                    course_end: "Mon 12:00"
+                  - course_id: 2
+                    course_name: "課程2"
+                    course_description: "課程簡介2"
+                    course_teacher: "教師B"
+                    course_start: "Tus 13:00"
+                    course_end: "Tus 14:00"
+        '400':
+          description: Invalid query
+          content:
+            application/json:
+              example:
+                error_msg: "Invalid query"
+  
+  /teacher/list:
+    get:
+      parameters:
+        - name: page_index
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                page_index: 1
+                page_count: 5
+                list:
+                  - teacher_id: 1
+                    teacher_name: "教師A"
+                    teacher_description: "教師A的簡介"
+                    teacher_mail: "teacherA@email.com"
+                    teacher_phone: "123456789"
+                  - teacher_id: 2
+                    teacher_name: "教師B"
+                    teacher_description: "教師B的簡介"
+                    teacher_mail: "teacherB@email.com"
+                    teacher_phone: "987654321"
+        '400':
+          description: Invalid query
+          content:
+            application/json:
+              example:
+                error_msg: "Invalid query"
+  
+  /teacher/course_list:
+    get:
+      parameters:
+        - name: teacher_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page_index
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                page_index: 1
+                page_count: 3
+                list:
+                  - course_id: 1
+                    course_name: "課程1"
+                    course_description: "課程簡介1"
+                    course_start: "Mon 11:00"
+                    course_end: "Mon 12:00"
+                  - course_id: 3
+                    course_name: "課程3"
+                    course_description: "課程簡介3"
+                    course_start: "Wed 15:00"
+                    course_end: "Wed 16:00"
+        '400':
+          description: Invalid query
+          content:
+            application/json:
+              example:
+                error_msg: "Invalid query"
+        '404':
+          description: teacher not found
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "teacher not found"
+
+  /teacher/new:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teacher_name:
+                  type: string
+                teacher_description:
+                  type: string
+                teacher_mail:
+                  type: string
+                teacher_phone:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                result: "success"
+                teacher_id: 3
+        '400':
+          description: Field validation error
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "{} error"
+
+  /course/new:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_name:
+                  type: string
+                course_description:
+                  type: string
+                course_teacher:
+                  type: string
+                course_time:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                result: "success"
+                course_id: 3
+        '400':
+          description: Field validation error
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "{} error"
+
+  /course/{course_id}/update:
+    put:
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_name:
+                  type: string
+                course_description:
+                  type: string
+                course_teacher:
+                  type: string
+                course_time:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                result: "success"
+        '400':
+          description: Field validation error
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "{} error"
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "course not found"
+
+  /course/{course_id}/delete:
+    delete:
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                result: "success"
+        '403':
+          description: Permission denied
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "permission denied"
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              example:
+                result: "fail"
+                error_msg: "course not found"
